@@ -32,7 +32,7 @@ class _ChatPageState extends State<ChatPage> {
                       width: 80,
                     ),
                     Text(
-                      "PANSIS LEDUSTRE",
+                      "PANSIS LEDUSTREs",
                       style: TextStyle(
                         color: Color(0xffc199cd),
                         fontSize: 20.0,

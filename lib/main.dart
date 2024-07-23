@@ -6,19 +6,33 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'firebase_options.dart';
 
 Future main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // if (kIsWeb) {
+  //   await Firebase.initializeApp(
+  //     options: FirebaseOptions(
+  //       apiKey: "AIzaSyArzIR4k4TVepAdlwoihFVbeYl3Z_3gkSA",
+  //       appId: "1:749584590064:web:baf81b84a347247b02ce35",
+  //       messagingSenderId: "749584590064",
+  //       projectId: "chat-app-3-1c701",
+  //     ),
+  //   );
+  // }
   WidgetsFlutterBinding.ensureInitialized();
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: "AIzaSyArzIR4k4TVepAdlwoihFVbeYl3Z_3gkSA",
-        appId: "1:749584590064:web:baf81b84a347247b02ce35",
-        messagingSenderId: "749584590064",
-        projectId: "chat-app-3-1c701",
-      ),
-    );
-  }
+
+  const FirebaseOptions firebaseOptions = FirebaseOptions(
+    apiKey: "AIzaSyArzIR4k4TVepAdlwoihFVbeYl3Z_3gkSA",
+    appId: "1:749584590064:web:baf81b84a347247b02ce35",
+    messagingSenderId: "749584590064",
+    projectId: "chat-app-3-1c701",
+  );
+
+  await Firebase.initializeApp(
+    name: "chat-app-3-1c701",
+    options: firebaseOptions,
+  );
 
   runApp(const MyApp());
 }

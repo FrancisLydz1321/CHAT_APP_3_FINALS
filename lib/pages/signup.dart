@@ -4,6 +4,7 @@ import 'package:chat_app_3/service/shared_pref.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -16,8 +17,8 @@ class _SignUpState extends State<SignUp> {
   String email = "", password = "", name = "", confirmPassword = "";
   // // creating objects
   TextEditingController mailcontroller = TextEditingController();
-  TextEditingController passwordcontroller = TextEditingController();
   TextEditingController namecontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
   TextEditingController confirmPasswordcontroller = TextEditingController();
 
   final _formkey = GlobalKey<FormState>();

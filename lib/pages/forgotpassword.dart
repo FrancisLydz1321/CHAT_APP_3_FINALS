@@ -1,57 +1,35 @@
-import 'package:chat_app_3/pages/home.dart';
-import 'package:chat_app_3/service/database.dart';
-import 'package:chat_app_3/service/shared_pref.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chat_app_3/pages/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class ForgotPassword extends StatefulWidget {
+  const ForgotPassword({super.key});
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<ForgotPassword> createState() => _ForgotPasswordState();
 }
 
-class _SignInState extends State<SignIn> {
-  String Email = "", password = "", Name = "", pic = "", username = "", Id = "";
-
-  // manage use write using TextEditinController;
-  TextEditingController usermailcontroller = new TextEditingController();
-  TextEditingController userpasswordcontroller = new TextEditingController();
+class _ForgotPasswordState extends State<ForgotPassword> {
+  String email = "";
 
   final _formkey = GlobalKey<FormState>();
-  userLogin() async {
+  TextEditingController usermailcontroller = new TextEditingController();
+
+  resetPassword() async {
     try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: Email, password: password);
-
-      QuerySnapshot querySnapshot =
-          await DatabaseMethods().getUserbyemail(Email);
-
-      Name = " ${querySnapshot.docs[0]["Name"]}";
-      username = " ${querySnapshot.docs[0]["username"]}";
-      pic = "${querySnapshot.docs[0]["Photo"]}";
-      Id = "${querySnapshot.docs[0]["Id"]}"; // .id with no apostrophe
-
-      await SharedPreferenceHelper().saveUserDisplayName(Name);
-      await SharedPreferenceHelper().saveUserName(username);
-      await SharedPreferenceHelper().saveUserId(Id);
-      await SharedPreferenceHelper().saveUserPic(pic);
-
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Home()));
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+        "Password Reset Email has been sent",
+        style: TextStyle(fontSize: 18.0),
+      )));
     } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-found") {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.orange,
-            content: Text("No User Found in our database",
-                style: TextStyle(fontSize: 18, color: Colors.black))));
-      } else if (e.code == "wrong-password") {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.orange,
-            content: Text("Wrong Password provided by User",
-                style: TextStyle(fontSize: 18, color: Colors.black))));
-      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+        "No User has been found for that email",
+        style: TextStyle(fontSize: 18.0),
+      )));
     }
   }
 
@@ -83,7 +61,7 @@ class _SignInState extends State<SignIn> {
                 children: [
                   Center(
                       child: Text(
-                    "Sign In",
+                    "Password Recovery",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24.0,
@@ -92,7 +70,7 @@ class _SignInState extends State<SignIn> {
                   )),
                   Center(
                       child: Text(
-                    "Log in your account",
+                    "Enter your E-mail",
                     style: TextStyle(
                       color: Color(0xFFbbb0ff),
                       fontSize: 18.0,
@@ -119,13 +97,13 @@ class _SignInState extends State<SignIn> {
                           vertical: 20.0,
                           horizontal: 20.0,
                         ),
-                        height: MediaQuery.of(context).size.height / 2,
+                        height: MediaQuery.of(context).size.height / 3,
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)),
                         child: Form(
-                          key: _formkey,
+                          key: _formkey, // GlobalKey
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -150,7 +128,7 @@ class _SignInState extends State<SignIn> {
                                   controller: usermailcontroller,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return "Please Enter E-mail";
+                                      return "Please Enter E-mail properly";
                                     }
                                     return null;
                                   },
@@ -164,69 +142,16 @@ class _SignInState extends State<SignIn> {
                                 ),
                               ),
                               SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Password',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              SizedBox(
-                                height: 20.0,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(left: 10),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                  width: 2.0,
-                                  color: Colors.black38,
-                                )),
-                                child: TextFormField(
-                                  controller: userpasswordcontroller,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Please Enter Password";
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    prefixIcon: Icon(
-                                      Icons.password_outlined,
-                                      color: Color(0xFF7f30fe),
-                                    ),
-                                  ),
-                                  obscureText: true,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Container(
-                                alignment: Alignment.bottomRight,
-                                child: Text(
-                                  "Forget Password?",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 50,
+                                height: 40,
                               ),
                               GestureDetector(
                                 onTap: () {
                                   if (_formkey.currentState!.validate()) {
                                     setState(() {
-                                      Email = usermailcontroller.text;
-                                      password = userpasswordcontroller.text;
+                                      email = usermailcontroller.text;
                                     });
+                                    resetPassword();
                                   }
-                                  userLogin();
                                 },
                                 child: Center(
                                   child: Container(
@@ -243,7 +168,7 @@ class _SignInState extends State<SignIn> {
                                                   BorderRadius.circular(10)),
                                           child: Center(
                                             child: Text(
-                                              'Sign In',
+                                              'Send E-mail',
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 18.0,
@@ -276,13 +201,28 @@ class _SignInState extends State<SignIn> {
                           fontSize: 16.0,
                         ),
                       ),
-                      Text(
-                        "Sign Up Now!",
-                        style: TextStyle(
-                          color: Color(0xFF7f30fe),
-                          fontSize: 16.0,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignUp()));
+                        },
+                        child: Text(
+                          "Sign Up Now!",
+                          style: TextStyle(
+                            color: Color(0xFF7f30fe),
+                            fontSize: 16.0,
+                          ),
                         ),
                       ),
+                      // Text(
+                      //   "Sign Up Now!",
+                      //   style: TextStyle(
+                      //     color: Color(0xFF7f30fe),
+                      //     fontSize: 16.0,
+                      //   ),
+                      // ),
                     ],
                   )
                 ],

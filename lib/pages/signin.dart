@@ -28,10 +28,23 @@ class _SignInState extends State<SignIn> {
       QuerySnapshot querySnapshot =
           await DatabaseMethods().getUserbyemail(Email);
 
-      Name = " ${querySnapshot.docs[0]["Name"]}";
-      username = " ${querySnapshot.docs[0]["username"]}";
-      pic = "${querySnapshot.docs[0]["Photo"]}";
-      Id = "${querySnapshot.docs[0]["Id"]}"; // .id with no apostrophe
+      if (querySnapshot.docs.isNotEmpty) {
+        setState(() {
+          Name = "${querySnapshot.docs[0]['Name'] ?? 'No Name Found'}";
+          username = "${querySnapshot.docs[0]["username"]}";
+          pic = "${querySnapshot.docs[0]["Photo"]}";
+          Id = querySnapshot
+              .docs[0].id; // Id = "${querySnapshot.docs[0]["Id"]}";
+        });
+      } else {
+        setState(() {
+          Name = 'No documents found';
+        });
+      }
+      // Name = "${querySnapshot.docs[0]["Name"]}";
+      // username = "${querySnapshot.docs[0]["username"]}";
+      // pic = "${querySnapshot.docs[0]["Photo"]}";
+      // Id = querySnapshot.docs[0].id; // Id = "${querySnapshot.docs[0]["Id"]}";
 
       await SharedPreferenceHelper().saveUserDisplayName(Name);
       await SharedPreferenceHelper().saveUserName(username);

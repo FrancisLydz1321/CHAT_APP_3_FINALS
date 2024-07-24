@@ -31,12 +31,18 @@ class _SignUpState extends State<SignUp> {
             .createUserWithEmailAndPassword(email: email, password: password);
 
         String Id = randomAlphaNumeric(10);
+        String user = mailcontroller.text.replaceAll("@gmail.com", "");
+        String updateusername =
+            user.replaceFirst(user[0], user[0].toUpperCase());
+        String firstletter = user.substring(0, 1).toUpperCase();
 
         Map<String, dynamic> userInfoMap = {
           // string is the key and dyanamic is the value type
           "Name": namecontroller.text,
           "Email": mailcontroller.text,
-          "username": mailcontroller.text.replaceAll("@gmail.com", ""),
+          "username": updateusername
+              .toUpperCase(), //mailcontroller.text.replaceAll("@gmail.com", ""),
+          "SearchKey": firstletter,
           "Photo":
               "https://firebasestorage.googleapis.com/v0/b/chat-app-3-1c701.appspot.com/o/profile_1.jpg?alt=media&token=046a2dc6-0523-46ef-b4c9-1f1b24a6a143",
           "Id": Id,

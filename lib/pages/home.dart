@@ -14,7 +14,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool search = false; // false
   String? myName, myProfilePic, myUserName, myEmail;
-  Stream chatRoomStream;
+  Stream? chatRoomStream;
 
   getthesharedpref() async {
     myName = await SharedPreferenceHelper().getUserDisplayName();
@@ -40,7 +40,8 @@ class _HomeState extends State<Home> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     DocumentSnapshot ds = snapshot.data.doc.length;
-                    return 
+                    // return ChatRoomListTile(chatRoomId: chatRoomId, lastMessage: ds["lastMessage"], myUsername: myUserName!, time: time);
+                    // return ChatRoomListTile(chatRoomId: chatRoomId, lastMessage: lastMessage: ds["lastMessage"], myUsername: myUsername, time: time)
                   },
                 )
               : Center(
@@ -437,28 +438,107 @@ class _HomeState extends State<Home> {
   }
 }
 
-
 class ChatRoomListTile extends StatefulWidget {
   // const ChatRoomList({super.key});
 
   final String lastMessage, chatRoomId, myUsername, time;
-  ChatRoomListTile({required this.chatRoomId, required this.lastMessage, required this.myUsername, required this.time});
-
+  ChatRoomListTile(
+      {required this.chatRoomId,
+      required this.lastMessage,
+      required this.myUsername,
+      required this.time});
 
   @override
-  State<ChatRoomListTile> createState() => _ChatRoomListState();
+  State<ChatRoomListTile> createState() => _ChatRoomListTileState();
 }
 
-class _ChatRoomListState extends State<ChatRoomListTile> {
-
-  String profilePicUrl = "", name="", username = "", id="";
+class _ChatRoomListTileState extends State<ChatRoomListTile> {
+  String profilePicUrl = "", name = "", username = "", id = "";
 
   getthisUserInfo() async {
-    username = widget.chatRoomId.replaceAll("-", "").replaceAll(widget.myUsername, "");
+    username =
+        widget.chatRoomId.replaceAll("_", "").replaceAll(widget.myUsername, "");
+    QuerySnapshot querySnapshot =
+        await DatabaseMethods().getUserInfo(username.toUpperCase());
+    name =
+        "${querySnapshot.docs[0]["Name"]}"; //alkfjaslkfjas;fkajs;flksj na unsa naman ni oy
+    profilePicUrl =
+        "${querySnapshot.docs[0]["Photo"]}"; //alkfjaslkfjas;fkajs;flksj na unsa naman ni oy
+    id =
+        "${querySnapshot.docs[0]["Id"]}"; //alkfjaslkfjas;fkajs;flksj na unsa naman ni oy
+    setState(() {});
+
+    @override
+    void initState() {
+      getthisUserInfo();
+      super.initState();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 40:22
+          profilePicUrl == ""
+              ? CircularProgressIndicator()
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(60),
+                  child: Image.network(
+                    profilePicUrl,
+                    height: 60,
+                    width: 60,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+          SizedBox(
+            width: 20,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    username,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                widget.lastMessage,
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            width: 60,
+          ),
+          Text(
+            widget.time,
+            style: TextStyle(
+              color: Colors.black45,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

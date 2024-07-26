@@ -14,6 +14,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool search = false; // false
   String? myName, myProfilePic, myUserName, myEmail;
+  Stream chatRoomStream;
 
   getthesharedpref() async {
     myName = await SharedPreferenceHelper().getUserDisplayName();
@@ -26,6 +27,26 @@ class _HomeState extends State<Home> {
   ontheload() async {
     await getthesharedpref();
     setState(() {});
+  }
+
+  Widget ChatRoomList() {
+    return StreamBuilder(
+        stream: chatRoomStream,
+        builder: (context, AsyncSnapshot snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: snapshot.data.docs.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot ds = snapshot.data.doc.length;
+                    return 
+                  },
+                )
+              : Center(
+                  child: CircularProgressIndicator(),
+                );
+        });
   }
 
   @override
@@ -413,5 +434,31 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+}
+
+
+class ChatRoomListTile extends StatefulWidget {
+  // const ChatRoomList({super.key});
+
+  final String lastMessage, chatRoomId, myUsername, time;
+  ChatRoomListTile({required this.chatRoomId, required this.lastMessage, required this.myUsername, required this.time});
+
+
+  @override
+  State<ChatRoomListTile> createState() => _ChatRoomListState();
+}
+
+class _ChatRoomListState extends State<ChatRoomListTile> {
+
+  String profilePicUrl = "", name="", username = "", id="";
+
+  getthisUserInfo() async {
+    username = widget.chatRoomId.replaceAll("-", "").replaceAll(widget.myUsername, "");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

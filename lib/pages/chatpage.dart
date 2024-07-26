@@ -170,7 +170,16 @@ class _ChatPageState extends State<ChatPage> {
         child: Stack(
           // Column()
           children: [
-            chatMessage(),
+            Container(
+                margin: EdgeInsets.only(top: 50),
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 1.12,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30))),
+                child: chatMessage()),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Row(
@@ -178,10 +187,11 @@ class _ChatPageState extends State<ChatPage> {
                   GestureDetector(
                     onTap: () {
                       Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Home(),
-                          ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Home(),
+                        ),
+                      );
                     },
                     child: Icon(
                       Icons.arrow_back_ios_new_outlined,
@@ -269,47 +279,60 @@ class _ChatPageState extends State<ChatPage> {
             //         ),
             //       ),
             // Spacer(),
-            Material(
-              elevation: 5,
-              borderRadius: BorderRadius.circular(30),
-              child: Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: messagecontroller,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Type a message",
-                          hintStyle: TextStyle(
-                            color: Colors.black45,
+            Container(
+              alignment: Alignment.bottomCenter,
+              child: Material(
+                // Material()
+                elevation: 5,
+                borderRadius: BorderRadius.circular(30),
+                child: Container(
+                  margin: EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    bottom: 10,
+                  ),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: messagecontroller,
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Type a message",
+                              hintStyle: TextStyle(
+                                color: Colors.black45,
+                              ),
+                              suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    addMessage(true);
+                                  },
+                                  child: Icon(Icons.send_rounded))),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          addMessage(true);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Color(0xFFf3f3f3),
+                              borderRadius: BorderRadius.circular(60)),
+                          child: Center(
+                            child: Icon(
+                              Icons.send,
+                              color: Color(0xFFd3d3d3),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        addMessage(true);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Color(0xFFf3f3f3),
-                            borderRadius: BorderRadius.circular(60)),
-                        child: Center(
-                          child: Icon(
-                            Icons.send,
-                            color: Color(0xFFd3d3d3),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             )

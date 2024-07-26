@@ -12,7 +12,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool search = false;
+  bool search = false; // false
   String? myName, myProfilePic, myUserName, myEmail;
 
   getthesharedpref() async {
@@ -57,8 +57,8 @@ class _HomeState extends State<Home> {
       search = true;
     });
 
-    var capitalizedValue =
-        value.substring(0, 1).toUpperCase() + value.substring(0);
+    String capitalizedValue = // var
+        value.substring(0, 1).toUpperCase() + value.substring(1);
     // String capitalizedValue(String value) {
     //   if (value.isEmpty) {
     //     return value;
@@ -66,11 +66,17 @@ class _HomeState extends State<Home> {
     //   return value.substring(0, 1).toUpperCase() + value.substring(0);
     // }
 
-    if (queryResultSet.length == 0 && value.length == 1) {
+    if (queryResultSet.isEmpty && value.length == 1) {
+      // if (queryResultSet.length == 0 && value.length == 1) {
       DatabaseMethods().Search(value).then((QuerySnapshot docs) {
-        for (int i = 0; i < docs.docs.length; i++) {
-          queryResultSet.add(docs.docs[i].data());
-        }
+        // for (int i = 0; i < docs.docs.length; ++i) {
+        //   queryResultSet.add(docs.docs[i].data());
+        // }
+        setState(() {
+          for (int i = 0; i < docs.docs.length; ++i) {
+            queryResultSet.add(docs.docs[i].data());
+          }
+        });
       });
     } else {
       tempSearchStore = [];
@@ -351,7 +357,7 @@ class _HomeState extends State<Home> {
             context,
             MaterialPageRoute(
                 builder: (context) => ChatPage(
-                    name: data["Name"],
+                    Name: data["Name"],
                     profileurl: data["Photo"],
                     username: data["username"])));
       },
